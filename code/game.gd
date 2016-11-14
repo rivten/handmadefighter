@@ -1,14 +1,31 @@
 
 extends Node2D
 
-func _ready():
-	set_fixed_process(false)
+var Root
+var HitboxScene = preload("res://StaticHitbox.tscn")
+var HitboxWr
+var HitboxInitialPos = Vector2(0, -120)
+var Hitbox
 
-	var Root = get_node("/root").get_child(0)
-	var Hitbox = preload("res://StaticHitbox.tscn").instance()
+func instanciate_hitbox():
+	Hitbox = HitboxScene.instance()
+	HitboxWr = weakref(Hitbox) # this is used to check existence of Hitbox
 
 	Root.add_child(Hitbox)
 	Hitbox.set_owner(Root)
+	Hitbox.set_pos(HitboxInitialPos)
 
-	# NOTE(hugo) : Hard-coding the initial pos of the hitbox
-	Hitbox.set_pos(Vector2(0, -120))
+func _ready():
+	set_fixed_process(false)
+
+	Root = get_node("/root").get_child(0)
+	instanciate_hitbox()
+
+	var TimerNode = find_node("Timer")
+	TimerNode.connect("timeout", self, "OnTimerTimeout")
+
+func OnTimerTimeout():
+	# TODO(hugo) : Is the root this very node ?
+	var HitboxExists = HitboxWr.get_ref()
+	if (!HitboxExists):
+		instanciate_hitbox()
