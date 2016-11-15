@@ -10,7 +10,7 @@ extents = Vector2( 374.689, 10 )
 
 [node name="Game" type="Node2D"]
 
-transform/pos = Vector2( 441.128, 256.808 )
+transform/pos = Vector2( 452.078, 257.064 )
 script/script = ExtResource( 1 )
 
 [node name="Fighter" parent="." instance=ExtResource( 2 )]
@@ -63,7 +63,7 @@ _update_shape_index = 0
 
 [node name="Timer" type="Timer" parent="."]
 
-process_mode = 1
+process_mode = 0
 wait_time = 3.0
 one_shot = false
 autostart = true
