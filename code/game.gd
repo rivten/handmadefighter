@@ -3,13 +3,13 @@ extends Node2D
 
 var Root
 var HitboxScene = preload("res://StaticHitbox.tscn")
-var HitboxWr
+var HitboxWeakRef
 var HitboxInitialPos = Vector2(0, -120)
 var Hitbox
 
 func instanciate_hitbox():
 	Hitbox = HitboxScene.instance()
-	HitboxWr = weakref(Hitbox) # this is used to check existence of Hitbox
+	HitboxWeakRef = weakref(Hitbox) # this is used to check existence of Hitbox
 
 	Root.add_child(Hitbox)
 	Hitbox.set_owner(Root)
@@ -22,10 +22,9 @@ func _ready():
 	instanciate_hitbox()
 
 	var TimerNode = find_node("Timer")
-	TimerNode.connect("timeout", self, "OnTimerTimeout")
+	TimerNode.connect("timeout", self, "respawn_hitbox")
 
-func OnTimerTimeout():
-	# TODO(hugo) : Is the root this very node ?
-	var HitboxExists = HitboxWr.get_ref()
+func respawn_hitbox():
+	var HitboxExists = HitboxWeakRef.get_ref()
 	if (!HitboxExists):
 		instanciate_hitbox()
