@@ -7,6 +7,7 @@ var Velocity = Vector2(0, 0)
 var InitPos = Vector2(0, 0)
 var DrawLeft = false
 var DrawRight = false
+var Freezed = false
 
 export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
 
@@ -30,10 +31,13 @@ func _ready():
 	set_fixed_process(true)
 	set_pos(InitPos)
 
+	Freezed = false
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
-	LeftAreaNode.connect("area_enter", self, "draw_left_area")
-	RightAreaNode.connect("area_enter", self, "draw_right_area")
+	LeftAreaNode.connect("area_enter", self, "hit_left_area")
+	RightAreaNode.connect("area_enter", self, "hit_right_area")
+	var FreezeTimerNode = find_node("FreezeTimer")
+	FreezeTimerNode.connect("timeout", self, "end_freeze")
 
 func shoot():
 	var Root = get_tree().get_root().get_node("Game")
@@ -45,31 +49,46 @@ func shoot():
 func _fixed_process(dt):
 	var Acceleration = Vector2(0, 0)
 
-	if(Input.is_action_pressed("up")):
-		Acceleration += Vector2(0, -1)
-	if(Input.is_action_pressed("down")):
-		Acceleration += Vector2(0, 1)
-	if(Input.is_action_pressed("right")):
-		shoot()
+	if(!Freezed):
+		if(Input.is_action_pressed("up")):
+			Acceleration += Vector2(0, -1)
+		if(Input.is_action_pressed("down")):
+			Acceleration += Vector2(0, 1)
+		if(Input.is_action_pressed("right")):
+			shoot()
 
-	Acceleration *= AccelerationNorm
-	Velocity += dt * Acceleration - dt * Drag * Velocity
-	var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
+		Acceleration *= AccelerationNorm
+		Velocity += dt * Acceleration - dt * Drag * Velocity
+		var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
 
-	move(DeltaPos)
+		move(DeltaPos)
+
 	self.update()
 
-func draw_left_area(AreaEntered):
+func hit_left_area(AreaEntered):
+	if(!Freezed):
+		Freezed = true
+		var FreezeTimerNode = find_node("FreezeTimer")
+		FreezeTimerNode.start()
+
 	if(DrawLeft):
 		DrawLeft = false
 	else:
 		DrawLeft = true
 	self.update()
 
-func draw_right_area(AreaEntered):
+func hit_right_area(AreaEntered):
+	if(!Freezed):
+		Freezed = true
+		var FreezeTimerNode = find_node("FreezeTimer")
+		FreezeTimerNode.start()
+
 	if(DrawRight):
 		DrawRight = false
 	else:
 		DrawRight = true
 	self.update()
 
+
+func end_freeze():
+	Freezed = false

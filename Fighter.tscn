@@ -3,17 +3,17 @@
 [ext_resource path="res://code/fighter.gd" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
 
-[sub_resource type="RectangleShape2D" id=3]
+[sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
 extents = Vector2( 31.9429, 32.0359 )
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=2]
 
 custom_solver_bias = 0.0
 extents = Vector2( 31.9429, 31.7586 )
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=3]
 
 custom_solver_bias = 0.0
 extents = Vector2( 31.7851, 31.1335 )
@@ -21,7 +21,7 @@ extents = Vector2( 31.7851, 31.1335 )
 [node name="Fighter" type="KinematicBody2D"]
 
 input/pickable = false
-shapes/0/shape = SubResource( 3 )
+shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/0/trigger = false
 collision/layers = 1
@@ -42,7 +42,7 @@ editor/display_folded = true
 transform/pos = Vector2( 0, 16.4992 )
 transform/scale = Vector2( 1, 0.504826 )
 input/pickable = true
-shapes/0/shape = SubResource( 4 )
+shapes/0/shape = SubResource( 2 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -52,7 +52,7 @@ angular_damp = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightArea"]
 
-shape = SubResource( 4 )
+shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
 
@@ -62,7 +62,7 @@ editor/display_folded = true
 transform/pos = Vector2( 0, -15.8456 )
 transform/scale = Vector2( 1, 0.504826 )
 input/pickable = true
-shapes/0/shape = SubResource( 2 )
+shapes/0/shape = SubResource( 3 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, -0.157784, -1.25018 )
 shapes/0/trigger = false
 gravity_vec = Vector2( 0, 1 )
@@ -73,15 +73,22 @@ angular_damp = 1.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LeftArea"]
 
 transform/pos = Vector2( -0.157784, -1.25018 )
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 trigger = false
 _update_shape_index = 0
 
 [node name="GlobalHitbox" type="CollisionShape2D" parent="."]
 
 visibility/visible = false
-shape = SubResource( 3 )
+shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
+
+[node name="FreezeTimer" type="Timer" parent="."]
+
+process_mode = 1
+wait_time = 0.25
+one_shot = true
+autostart = false
 
 
