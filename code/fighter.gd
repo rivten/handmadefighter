@@ -3,11 +3,14 @@ extends KinematicBody2D
 
 export var AccelerationNorm = 6000
 export var Drag = 10
+export var HitlagTeleportDelta = 100
 var Velocity = Vector2(0, 0)
 var InitPos = Vector2(0, 0)
 var DrawLeft = false
 var DrawRight = false
 var Freezed = false
+var FreezeInputRecorded = false
+var FreezeInput = Vector2(0.0, 0.0)
 
 export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
 
@@ -32,6 +35,9 @@ func _ready():
 	set_pos(InitPos)
 
 	Freezed = false
+	FreezeInputRecorded = false
+	FreezeInput = Vector2(0.0, 0.0)
+
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
 	LeftAreaNode.connect("area_enter", self, "hit_left_area")
@@ -63,6 +69,15 @@ func _fixed_process(dt):
 
 		move(DeltaPos)
 
+	else : #NOTE(hugo) : if Freeze
+		if(!FreezeInputRecorded):
+			if(Input.is_action_pressed("up")):
+				FreezeInput = Vector2(0, -1)
+				FreezeInputRecorded = true
+			if(Input.is_action_pressed("down")):
+				FreezeInput = Vector2(0, 1)
+				FreezeInputRecorded = true
+
 	self.update()
 
 func hit_left_area(AreaEntered):
@@ -89,6 +104,8 @@ func hit_right_area(AreaEntered):
 		DrawRight = true
 	self.update()
 
-
 func end_freeze():
 	Freezed = false
+	FreezeInputRecorded = false
+	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput;
+	move(DeltaFreezePos)
