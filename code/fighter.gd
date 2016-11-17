@@ -11,6 +11,7 @@ var DrawRight = false
 var Freezed = false
 var FreezeInputRecorded = false
 var FreezeInput = Vector2(0.0, 0.0)
+var FreezeTimerNode
 
 export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
 
@@ -38,11 +39,12 @@ func _ready():
 	FreezeInputRecorded = false
 	FreezeInput = Vector2(0.0, 0.0)
 
+	FreezeTimerNode = find_node("FreezeTimer")
+
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
 	LeftAreaNode.connect("area_enter", self, "hit_left_area")
 	RightAreaNode.connect("area_enter", self, "hit_right_area")
-	var FreezeTimerNode = find_node("FreezeTimer")
 	FreezeTimerNode.connect("timeout", self, "end_freeze")
 
 func shoot():
@@ -83,29 +85,24 @@ func _fixed_process(dt):
 func hit_left_area(AreaEntered):
 	if(!Freezed):
 		Freezed = true
-		var FreezeTimerNode = find_node("FreezeTimer")
 		FreezeTimerNode.start()
 
-	if(DrawLeft):
-		DrawLeft = false
-	else:
-		DrawLeft = true
+	DrawLeft = !DrawLeft
 	self.update()
 
 func hit_right_area(AreaEntered):
 	if(!Freezed):
 		Freezed = true
-		var FreezeTimerNode = find_node("FreezeTimer")
 		FreezeTimerNode.start()
 
-	if(DrawRight):
-		DrawRight = false
-	else:
-		DrawRight = true
+	DrawRight = !DrawRight
 	self.update()
 
 func end_freeze():
-	Freezed = false
-	FreezeInputRecorded = false
 	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput;
 	move(DeltaFreezePos)
+
+	# NOTE(hugo): re-init of freeze parameters
+	FreezeInput = Vector2(0, 0)
+	Freezed = false
+	FreezeInputRecorded = false
