@@ -4,7 +4,7 @@ extends Node2D
 var Root
 var HitboxScene = preload("res://StaticHitbox.tscn")
 var HitboxWeakRef
-var HitboxInitialPos = Vector2(0, -120)
+var HitboxInitialPos = Vector2(300, 170)
 var Hitbox
 
 func instanciate_hitbox():
@@ -23,6 +23,9 @@ func _ready():
 
 	var TimerNode = find_node("Timer")
 	TimerNode.connect("timeout", self, "respawn_hitbox")
+
+	var Fighter = find_node("Fighter")
+	Fighter.set_pos(Vector2(300, 400))
 
 func respawn_hitbox():
 	var HitboxExists = HitboxWeakRef.get_ref()
