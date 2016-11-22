@@ -24,8 +24,15 @@ func _ready():
 	var TimerNode = find_node("Timer")
 	TimerNode.connect("timeout", self, "respawn_hitbox")
 
+	# NOTE(hugo) : Settings of the first fighter
 	var Fighter = find_node("Fighter")
 	Fighter.set_pos(Vector2(300, 400))
+
+	# NOTE(hugo) : Settings of the second fighter
+	var Fighter2 = find_node("Fighter2")
+	Fighter2.set_pos(Vector2(600, 400))
+	Fighter2.IsControllable = false
+
 
 func respawn_hitbox():
 	var HitboxExists = HitboxWeakRef.get_ref()

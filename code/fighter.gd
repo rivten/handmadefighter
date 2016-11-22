@@ -14,6 +14,7 @@ var FreezeInput = Vector2(0.0, 0.0)
 var FreezeTimerNode
 var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
+var IsControllable = true
 
 export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
 
@@ -36,7 +37,7 @@ func _ready():
 
 func _fixed_process(dt):
 
-	if(!Frozen):
+	if(IsControllable && (!Frozen)):
 		if(Input.is_action_pressed("up")):
 			Acceleration += AccelerationNorm * Vector2(0, -1)
 		if(Input.is_action_pressed("down")):
