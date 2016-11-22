@@ -31,7 +31,7 @@ func _ready():
 	# NOTE(hugo) : Settings of the second fighter
 	var Fighter2 = find_node("Fighter2")
 	Fighter2.set_pos(Vector2(600, 400))
-	Fighter2.IsControllable = false
+	Fighter2.set_input_map("up1", "down1", "left1", "right1")
 
 
 func respawn_hitbox():
