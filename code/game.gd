@@ -3,23 +3,37 @@ extends Node2D
 
 var Root
 var HitboxScene = preload("res://StaticHitbox.tscn")
-var HitboxWeakRef
-var HitboxInitialPos = Vector2(300, 170)
-var Hitbox
 
-func instanciate_hitbox():
-	Hitbox = HitboxScene.instance()
-	HitboxWeakRef = weakref(Hitbox) # this is used to check existence of Hitbox
+var LeftHitboxInitialPos = Vector2(300, 170)
+var LeftHitboxWeakRef
+var LeftHitbox
 
-	Root.add_child(Hitbox)
-	Hitbox.set_owner(Root)
-	Hitbox.set_pos(HitboxInitialPos)
+var RightHitboxInitialPos = Vector2(600, 170)
+var RightHitboxWeakRef
+var RightHitbox
+
+func instanciate_left_hitbox():
+	LeftHitbox = HitboxScene.instance()
+	LeftHitboxWeakRef = weakref(LeftHitbox) # this is used to check existence of Hitbox
+
+	Root.add_child(LeftHitbox)
+	LeftHitbox.set_owner(Root)
+	LeftHitbox.set_pos(LeftHitboxInitialPos)
+
+func instanciate_right_hitbox():
+	RightHitbox = HitboxScene.instance()
+	RightHitboxWeakRef = weakref(RightHitbox) # this is used to check existence of Hitbox
+
+	Root.add_child(RightHitbox)
+	RightHitbox.set_owner(Root)
+	RightHitbox.set_pos(RightHitboxInitialPos)
 
 func _ready():
 	set_fixed_process(false)
 
 	Root = get_node("/root").get_child(0)
-	instanciate_hitbox()
+	instanciate_left_hitbox()
+	instanciate_right_hitbox()
 
 	var TimerNode = find_node("Timer")
 	TimerNode.connect("timeout", self, "respawn_hitbox")
@@ -36,6 +50,10 @@ func _ready():
 
 
 func respawn_hitbox():
-	var HitboxExists = HitboxWeakRef.get_ref()
-	if (!HitboxExists):
-		instanciate_hitbox()
+	var LeftHitboxExists = LeftHitboxWeakRef.get_ref()
+	if (!LeftHitboxExists):
+		instanciate_left_hitbox()
+
+	var RightHitboxExists = RightHitboxWeakRef.get_ref()
+	if (!RightHitboxExists):
+		instanciate_right_hitbox()
