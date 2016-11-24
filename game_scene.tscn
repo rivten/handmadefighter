@@ -11,6 +11,7 @@ extents = Vector2( 374.689, 20.4797 )
 [node name="Game" type="Node2D"]
 
 script/script = ExtResource( 1 )
+FighterMargin = 200
 
 [node name="Fighter" parent="." instance=ExtResource( 2 )]
 
