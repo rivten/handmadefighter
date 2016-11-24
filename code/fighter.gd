@@ -24,6 +24,8 @@ var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
 var IsControllable = true
 var CanShoot = true
+var BulletScene = preload("res://Bullet.tscn")
+var BulletsGroupName
 
 var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
@@ -49,6 +51,8 @@ func _ready():
 
 	CooldownTimerNode = find_node("CooldownTimer")
 	CooldownTimerNode.connect("timeout", self, "enable_shooting")
+
+	BulletsGroupName = "BulletsOf" + self.get_name()
 
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
@@ -89,28 +93,31 @@ func _fixed_process(dt):
 				FreezeInputRecorded = true
 
 func shoot():
-	var Root = get_tree().get_root().get_node("Game")
-	var BulletNode = preload("res://Bullet.tscn").instance()
+	var GameNode = get_tree().get_root().get_node("Game")
+	var BulletNode = BulletScene.instance()
 	BulletNode.set_pos(get_pos())
 	BulletNode.set_velocity(BulletSpeed * BulletDir)
-	Root.add_child(BulletNode)
+	GameNode.add_child(BulletNode)
+	BulletNode.add_to_group(BulletsGroupName)
 
 func enable_shooting():
 	CanShoot = true
 
 func set_hit_side_to_left(EnteredHitbox):
-	EnteredHitbox.queue_free()
-	if(!Frozen):
-		Frozen = true
-		FreezeTimerNode.start()
-		LastHitSide = "left"
+	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
+		EnteredHitbox.queue_free()
+		if(!Frozen):
+			Frozen = true
+			FreezeTimerNode.start()
+			LastHitSide = "left"
 
 func set_hit_side_to_right(EnteredHitbox):
-	EnteredHitbox.queue_free()
-	if(!Frozen):
-		Frozen = true
-		FreezeTimerNode.start()
-		LastHitSide = "right"
+	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
+		EnteredHitbox.queue_free()
+		if(!Frozen):
+			Frozen = true
+			FreezeTimerNode.start()
+			LastHitSide = "right"
 
 func teleport_and_project():
 	#(K)Teleport…
