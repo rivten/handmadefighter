@@ -32,7 +32,7 @@ AccelerationNorm = 6000
 Drag = 10
 HitlagTeleportDelta = 100
 ProjectionAccelerationNorm = 100000
-BulletVelocity = Vector2( 90, 0 )
+BulletSpeed = 90.0
 
 [node name="Sprite" type="Sprite" parent="."]
 
@@ -88,6 +88,13 @@ _update_shape_index = 0
 
 process_mode = 1
 wait_time = 0.25
+one_shot = true
+autostart = false
+
+[node name="CooldownTimer" type="Timer" parent="."]
+
+process_mode = 1
+wait_time = 0.2
 one_shot = true
 autostart = false
 

@@ -18,9 +18,11 @@ var Frozen = false
 var FreezeInputRecorded = false
 var FreezeInput = Vector2(0.0, 0.0)
 var FreezeTimerNode
+var CooldownTimerNode
 var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
 var IsControllable = true
+var CanShoot = true
 
 var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
@@ -44,6 +46,9 @@ func _ready():
 	FreezeTimerNode = find_node("FreezeTimer")
 	FreezeTimerNode.connect("timeout", self, "teleport_and_project")
 
+	CooldownTimerNode = find_node("CooldownTimer")
+	CooldownTimerNode.connect("timeout", self, "enable_shooting")
+
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
 	LeftAreaNode.connect("area_enter", self, "set_hit_side_to_left")
@@ -59,8 +64,10 @@ func _fixed_process(dt):
 			Acceleration += AccelerationNorm * Vector2(0, -1)
 		if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 			Acceleration += AccelerationNorm * Vector2(0, 1)
-		if(Input.is_action_pressed(InputMap[INPUT_SHOOT])):
+		if(Input.is_action_pressed(InputMap[INPUT_SHOOT]) && CanShoot):
 			shoot()
+			CanShoot = false
+			CooldownTimerNode.start()
 
 		Velocity += dt * Acceleration - dt * Drag * Velocity
 		var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
@@ -85,6 +92,9 @@ func shoot():
 	BulletNode.set_pos(get_pos())
 	BulletNode.set_velocity(BulletSpeed * BulletDir)
 	Root.add_child(BulletNode)
+
+func enable_shooting():
+	CanShoot = true
 
 func set_hit_side_to_left(EnteredHitbox):
 	EnteredHitbox.queue_free()
