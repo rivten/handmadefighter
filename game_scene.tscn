@@ -16,6 +16,10 @@ script/script = ExtResource( 1 )
 
 transform/pos = Vector2( 446.203, 356.418 )
 
+[node name="Fighter2" parent="." instance=ExtResource( 2 )]
+
+transform/pos = Vector2( 708.755, 357.778 )
+
 [node name="Wall0" type="StaticBody2D" parent="."]
 
 transform/pos = Vector2( -7.51233, -45.074 )
