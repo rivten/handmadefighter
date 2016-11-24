@@ -1,6 +1,13 @@
 
 extends KinematicBody2D
 
+# NOTE(hugo) : Input map
+const INPUT_UP = 0
+const INPUT_DOWN = 1
+const INPUT_LEFT = 2
+const INPUT_RIGHT = 3
+var InputMap = ["", "", "", ""]
+
 export var AccelerationNorm = 6000
 export var Drag = 10
 export var HitlagTeleportDelta = 100
@@ -18,6 +25,15 @@ var IsControllable = true
 
 export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
 
+func set_input_map(UpInput, DownInput, LeftInput, RightInput):
+	InputMap[INPUT_UP] = UpInput
+	InputMap[INPUT_DOWN] = DownInput
+	InputMap[INPUT_LEFT] = LeftInput
+	InputMap[INPUT_RIGHT] = RightInput
+
+func set_default_input_map():
+	set_input_map("up0", "down0", "left0", "right0")
+
 func _ready():
 	set_fixed_process(true)
 	set_pos(InitPos)
@@ -34,15 +50,17 @@ func _ready():
 	LeftAreaNode.connect("area_enter", self, "set_hit_side_to_left")
 	RightAreaNode.connect("area_enter", self, "set_hit_side_to_right")
 
+	set_default_input_map()
+
 
 func _fixed_process(dt):
 
 	if(IsControllable && (!Frozen)):
-		if(Input.is_action_pressed("up")):
+		if(Input.is_action_pressed(InputMap[INPUT_UP])):
 			Acceleration += AccelerationNorm * Vector2(0, -1)
-		if(Input.is_action_pressed("down")):
+		if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 			Acceleration += AccelerationNorm * Vector2(0, 1)
-		if(Input.is_action_pressed("right")):
+		if(Input.is_action_pressed(InputMap[INPUT_RIGHT])):
 			shoot()
 
 		Velocity += dt * Acceleration - dt * Drag * Velocity
