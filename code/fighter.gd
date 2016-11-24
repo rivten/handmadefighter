@@ -72,10 +72,10 @@ func _fixed_process(dt):
 
 	else : #NOTE(hugo) : if Freeze
 		if(!FreezeInputRecorded):
-			if(Input.is_action_pressed("up")):
+			if(Input.is_action_pressed(InputMap[INPUT_UP])):
 				FreezeInput = Vector2(0, -1)
 				FreezeInputRecorded = true
-			if(Input.is_action_pressed("down")):
+			if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 				FreezeInput = Vector2(0, 1)
 				FreezeInputRecorded = true
 
