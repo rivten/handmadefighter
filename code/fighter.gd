@@ -4,9 +4,8 @@ extends KinematicBody2D
 # NOTE(hugo) : Input map
 const INPUT_UP = 0
 const INPUT_DOWN = 1
-const INPUT_LEFT = 2
-const INPUT_RIGHT = 3
-var InputMap = ["", "", "", ""]
+const INPUT_SHOOT = 2
+var InputMap = ["", "", ""]
 
 export var AccelerationNorm = 6000
 export var Drag = 10
@@ -23,16 +22,16 @@ var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
 var IsControllable = true
 
-export(Vector2) var BulletVelocity = Vector2(90.0, 0.0)
+var BulletDir = Vector2(1.0, 0.0)
+export(float, 0.0, 150.0) var BulletSpeed = 90.0
 
-func set_input_map(UpInput, DownInput, LeftInput, RightInput):
+func set_input_map(UpInput, DownInput, ShootInput):
 	InputMap[INPUT_UP] = UpInput
 	InputMap[INPUT_DOWN] = DownInput
-	InputMap[INPUT_LEFT] = LeftInput
-	InputMap[INPUT_RIGHT] = RightInput
+	InputMap[INPUT_SHOOT] = ShootInput
 
 func set_default_input_map():
-	set_input_map("up0", "down0", "left0", "right0")
+	set_input_map("up0", "down0", "right0")
 
 func _ready():
 	set_fixed_process(true)
@@ -60,7 +59,7 @@ func _fixed_process(dt):
 			Acceleration += AccelerationNorm * Vector2(0, -1)
 		if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 			Acceleration += AccelerationNorm * Vector2(0, 1)
-		if(Input.is_action_pressed(InputMap[INPUT_RIGHT])):
+		if(Input.is_action_pressed(InputMap[INPUT_SHOOT])):
 			shoot()
 
 		Velocity += dt * Acceleration - dt * Drag * Velocity
@@ -84,7 +83,7 @@ func shoot():
 	var Root = get_tree().get_root().get_node("Game")
 	var BulletNode = preload("res://Bullet.tscn").instance()
 	BulletNode.set_pos(get_pos())
-	BulletNode.set_velocity(BulletVelocity)
+	BulletNode.set_velocity(BulletSpeed * BulletDir)
 	Root.add_child(BulletNode)
 
 func set_hit_side_to_left(EnteredHitbox):
