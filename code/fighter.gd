@@ -11,6 +11,7 @@ export var AccelerationNorm = 6000
 export var Drag = 10
 export var HitlagTeleportDelta = 100
 export var ProjectionAccelerationNorm = 100000
+export(float, 0.0, 2.0, 0.01) var CooldownDuration = 0.2
 var InitPos = Vector2(0, 0)
 var Velocity = Vector2(0, 0)
 var Acceleration = Vector2(0.0, 0.0)
@@ -67,6 +68,7 @@ func _fixed_process(dt):
 		if(Input.is_action_pressed(InputMap[INPUT_SHOOT]) && CanShoot):
 			shoot()
 			CanShoot = false
+			CooldownTimerNode.set_wait_time(CooldownDuration)
 			CooldownTimerNode.start()
 
 		Velocity += dt * Acceleration - dt * Drag * Velocity
