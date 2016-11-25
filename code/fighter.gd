@@ -26,9 +26,10 @@ var IsControllable = true
 var CanShoot = true
 var BulletScene = preload("res://Bullet.tscn")
 var BulletsGroupName
-
 var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
+
+signal hit_by_hitbox
 
 func set_input_map(UpInput, DownInput, ShootInput):
 	InputMap[INPUT_UP] = UpInput
@@ -61,7 +62,6 @@ func _ready():
 
 	set_default_input_map()
 
-	add_user_signal("hit_by_hitbox", [{'name': 'name_of_fighter', 'type': TYPE_STRING}, {'name':'damage', 'type': TYPE_INT}])
 	var GameNode = get_node("/root/Game")
 	self.connect("hit_by_hitbox", GameNode, "increase_damage_counter")
 
