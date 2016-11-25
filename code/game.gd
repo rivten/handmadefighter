@@ -12,6 +12,8 @@ var RightHitboxInitialPos
 var RightHitboxWeakRef
 var RightHitbox
 
+var DamageCounter
+
 export(int, 100, 500) var FighterMargin = 200
 const FIGHTER_HORIZONTAL_INIT_POS = 400
 const HITBOX_HORIZONTAL_INIT_POS = 170
@@ -44,7 +46,6 @@ func _ready():
 	instanciate_left_hitbox()
 	instanciate_right_hitbox()
 
-
 	var TimerNode = find_node("Timer")
 	TimerNode.connect("timeout", self, "respawn_hitbox")
 
@@ -58,6 +59,7 @@ func _ready():
 	Fighter2.set_input_map("up1", "down1", "left1")
 	Fighter2.BulletDir = Vector2(-1.0, 0.0)
 
+	DamageCounter = find_node("DamageCounter")
 
 func respawn_hitbox():
 	var LeftHitboxExists = LeftHitboxWeakRef.get_ref()
@@ -67,3 +69,9 @@ func respawn_hitbox():
 	var RightHitboxExists = RightHitboxWeakRef.get_ref()
 	if (!RightHitboxExists):
 		instanciate_right_hitbox()
+
+
+func increase_damage_counter(FighterName, Damage):
+	if(FighterName == 'Fighter'):
+		var NewDamage = (DamageCounter.get_text().to_int()) + Damage
+		DamageCounter.set_text(str(NewDamage))

@@ -26,9 +26,10 @@ var IsControllable = true
 var CanShoot = true
 var BulletScene = preload("res://Bullet.tscn")
 var BulletsGroupName
-
 var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
+
+signal hit_by_hitbox
 
 func set_input_map(UpInput, DownInput, ShootInput):
 	InputMap[INPUT_UP] = UpInput
@@ -61,6 +62,8 @@ func _ready():
 
 	set_default_input_map()
 
+	var GameNode = get_node("/root/Game")
+	self.connect("hit_by_hitbox", GameNode, "increase_damage_counter")
 
 func _fixed_process(dt):
 
@@ -91,7 +94,7 @@ func _fixed_process(dt):
 			if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 				FreezeInput = Vector2(0, 1)
 				FreezeInputRecorded = true
-
+	
 func shoot():
 	var GameNode = get_tree().get_root().get_node("Game")
 	var BulletNode = BulletScene.instance()
@@ -110,6 +113,7 @@ func set_hit_side_to_left(EnteredHitbox):
 			Frozen = true
 			FreezeTimerNode.start()
 			LastHitSide = "left"
+			emit_signal("hit_by_hitbox", self.get_name(), 10)
 
 func set_hit_side_to_right(EnteredHitbox):
 	if(!EnteredHitbox.is_in_group(BulletsGroupName)):

@@ -73,7 +73,7 @@ wait_time = 3.0
 one_shot = false
 autostart = true
 
-[node name="FighterCounter" type="Label" parent="."]
+[node name="DamageCounter" type="Label" parent="."]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
