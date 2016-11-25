@@ -72,5 +72,6 @@ func respawn_hitbox():
 
 
 func increase_damage_counter(FighterName, Damage):
-	var NewDamage = (DamageCounter.get_text().to_int()) + Damage
-	DamageCounter.set_text(str(NewDamage))
+	if(FighterName == 'Fighter'):
+		var NewDamage = (DamageCounter.get_text().to_int()) + Damage
+		DamageCounter.set_text(str(NewDamage))
