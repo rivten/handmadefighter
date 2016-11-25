@@ -16,7 +16,6 @@ FighterMargin = 200
 [node name="Fighter" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 446.203, 356.418 )
-CooldownDuration = 0.1
 
 [node name="Fighter2" parent="." instance=ExtResource( 2 )]
 

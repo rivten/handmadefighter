@@ -33,7 +33,7 @@ Drag = 10
 HitlagTeleportDelta = 100
 ProjectionAccelerationNorm = 100000
 CooldownDuration = 0.2
-BulletSpeed = 90.0
+BulletSpeed = 200.0
 
 [node name="Sprite" type="Sprite" parent="."]
 

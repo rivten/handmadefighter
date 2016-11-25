@@ -1,7 +1,7 @@
 
 extends Node2D
 
-var Root
+var GameNode
 var HitboxScene = preload("res://StaticHitbox.tscn")
 
 var LeftHitboxInitialPos
@@ -22,16 +22,16 @@ func instanciate_left_hitbox():
 	LeftHitbox = HitboxScene.instance()
 	LeftHitboxWeakRef = weakref(LeftHitbox) # this is used to check existence of Hitbox
 
-	Root.add_child(LeftHitbox)
-	LeftHitbox.set_owner(Root)
+	GameNode.add_child(LeftHitbox)
+	LeftHitbox.set_owner(GameNode)
 	LeftHitbox.set_pos(LeftHitboxInitialPos)
 
 func instanciate_right_hitbox():
 	RightHitbox = HitboxScene.instance()
 	RightHitboxWeakRef = weakref(RightHitbox) # this is used to check existence of Hitbox
 
-	Root.add_child(RightHitbox)
-	RightHitbox.set_owner(Root)
+	GameNode.add_child(RightHitbox)
+	RightHitbox.set_owner(GameNode)
 	RightHitbox.set_pos(RightHitboxInitialPos)
 #################################
 
@@ -40,10 +40,10 @@ func _ready():
 	var WindowSize = get_viewport().get_rect().size
 	LeftHitboxInitialPos = Vector2(FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
 	RightHitboxInitialPos = Vector2(WindowSize.x - FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
-
-	Root = get_node("/root").get_child(0)
+	GameNode = get_node("/root").get_node("Game")
 	instanciate_left_hitbox()
 	instanciate_right_hitbox()
+
 
 	var TimerNode = find_node("Timer")
 	TimerNode.connect("timeout", self, "respawn_hitbox")
