@@ -12,6 +12,7 @@ export var Drag = 10
 export var HitlagTeleportDelta = 100
 export var ProjectionAccelerationNorm = 100000
 export(float, 0.0, 2.0, 0.01) var CooldownDuration = 0.2
+export(float, 0.0, 500.0, 10.0) var HomelineAttractionFactor = 100.0
 var InitPos = Vector2(0, 0)
 var Velocity = Vector2(0, 0)
 var Acceleration = Vector2(0.0, 0.0)
@@ -85,7 +86,8 @@ func _fixed_process(dt):
 			CooldownTimerNode.set_wait_time(CooldownDuration)
 			CooldownTimerNode.start()
 
-		Velocity += dt * Acceleration - dt * Drag * Velocity
+		var HomelineAttraction = HomelineAttractionFactor * Vector2(InitPos.x - get_pos().x, 0.0).normalized()
+		Velocity += dt * (Acceleration - Drag * Velocity + HomelineAttraction)
 		var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
 
 		Acceleration = Vector2(0.0, 0.0)
