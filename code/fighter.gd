@@ -151,8 +151,9 @@ func process_hit(EnteredHitbox, HitSide):
 
 func teleport_and_project():
 	#(K)Teleport…
-	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput;
-	move(DeltaFreezePos)
+	var DeltaHitPos = 20 * BulletDir # NOTE(hugo) : the fighter should advance in the direction it shoots towards
+	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput
+	move(DeltaFreezePos + DeltaHitPos)
 
 	#(K)…and project
 	var HitDirection
