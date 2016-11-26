@@ -131,24 +131,23 @@ func enable_shooting():
 	CanShoot = true
 
 func set_hit_side_to_left(EnteredHitbox):
+	process_hit(EnteredHitbox, "left")
+
+func set_hit_side_to_right(EnteredHitbox):
+	process_hit(EnteredHitbox, "right")
+
+func process_hit(EnteredHitbox, HitSide):
 	var Damage = 0
 	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
-		if(EnteredHitbox.get_name() == "Bullet"): #NOTE(hugo): I don't really like that but I don't see any easy way around this. We need to get the power of a bullet, so we need to know if we hit a bullet first, then react accordingly
+		#NOTE(hugo): I don't really like that but I don't see any easy way around this. We need to get the power of a bullet, so we need to know if we hit a bullet first, then react accordingly
+		if(EnteredHitbox.get_name() == "Bullet"):
 			Damage = EnteredHitbox.Power
 		EnteredHitbox.queue_free()
 		if(!Frozen):
 			Frozen = true
 			FreezeTimerNode.start()
-			LastHitSide = "left"
+			LastHitSide = HitSide
 			emit_signal("hit_by_hitbox", self.get_name(), Damage)
-
-func set_hit_side_to_right(EnteredHitbox):
-	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
-		EnteredHitbox.queue_free()
-		if(!Frozen):
-			Frozen = true
-			FreezeTimerNode.start()
-			LastHitSide = "right"
 
 func teleport_and_project():
 	#(K)Teleport…
