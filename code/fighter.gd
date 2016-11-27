@@ -5,7 +5,8 @@ extends KinematicBody2D
 const INPUT_UP = 0
 const INPUT_DOWN = 1
 const INPUT_SHOOT = 2
-var InputMap = ["", "", ""]
+const INPUT_SPECIAL = 3
+var InputMap = ["", "", "", ""]
 
 export var AccelerationNorm = 6000
 export var Drag = 10
@@ -31,13 +32,14 @@ export(float, 0.0, 150.0) var BulletSpeed = 90.0
 
 signal hit_by_hitbox
 
-func set_input_map(UpInput, DownInput, ShootInput):
+func set_input_map(UpInput, DownInput, ShootInput, SpecialInput):
 	InputMap[INPUT_UP] = UpInput
 	InputMap[INPUT_DOWN] = DownInput
 	InputMap[INPUT_SHOOT] = ShootInput
+	InputMap[INPUT_SPECIAL] = SpecialInput
 
 func set_default_input_map():
-	set_input_map("up0", "down0", "right0")
+	set_input_map("up0", "down0", "right0", "control0")
 
 func _ready():
 	set_fixed_process(true)
@@ -82,9 +84,22 @@ func _fixed_process(dt):
 		var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
 
 		Acceleration = Vector2(0.0, 0.0)
+		var PreviousPos = get_pos()
 		#(K) Acceleration is reset at the end (and not the beginning) so that another 
 		# function (like teleport_and_project) can decide of the acceleration for one frame
 		move(DeltaPos)
+
+		if(Input.is_action_pressed(InputMap[INPUT_SPECIAL])):
+			# NOTE(hugo) : I need to compare with the previous position in case a movement is asked by the
+			# user but cannot be resolved by the collision manager. For example, I want to go down but
+			# cannot because of the screen. DeltaPos is not null but the resulting movement is, therefore 
+			# the need to compare the previous position with the actual resulting position after the 
+			# 'move' call
+			var ActualMovement = get_pos() - PreviousPos
+			var DeltaPosVerticalComponent = Vector2(0, ActualMovement.y)
+			var BulletGroup = get_tree().get_nodes_in_group(BulletsGroupName)
+			for Bullet in BulletGroup:
+				Bullet.set_pos(Bullet.get_pos() + DeltaPosVerticalComponent)
 
 	else : #NOTE(hugo) : if Freeze
 		if(!FreezeInputRecorded):
