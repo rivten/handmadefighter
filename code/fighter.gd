@@ -64,8 +64,8 @@ func _ready():
 
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
-	LeftAreaNode.connect("area_enter", self, "set_hit_side_to_left")
-	RightAreaNode.connect("area_enter", self, "set_hit_side_to_right")
+	LeftAreaNode.connect("area_enter", self, "start_hitlag_from_left")
+	RightAreaNode.connect("area_enter", self, "start_hitlag_from_right")
 
 	set_default_input_map()
 
@@ -130,13 +130,13 @@ func shoot(BulletType):
 func enable_shooting():
 	CanShoot = true
 
-func set_hit_side_to_left(EnteredHitbox):
-	process_hit(EnteredHitbox, "left")
+func start_hitlag_from_left(EnteredHitbox):
+	start_hitlag(EnteredHitbox, "left")
 
-func set_hit_side_to_right(EnteredHitbox):
-	process_hit(EnteredHitbox, "right")
+func start_hitlag_from_right(EnteredHitbox):
+	start_hitlag(EnteredHitbox, "right")
 
-func process_hit(EnteredHitbox, HitSide):
+func start_hitlag(EnteredHitbox, HitSide):
 	var Damage = 0
 	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
 		#NOTE(hugo): I don't really like that but I don't see any easy way around this. We need to get the power of a bullet, so we need to know if we hit a bullet first, then react accordingly
