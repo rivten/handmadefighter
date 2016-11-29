@@ -151,16 +151,15 @@ func process_hit(EnteredHitbox, HitSide):
 
 func teleport_and_project():
 	#(K)Teleport…
-	var DeltaHitPos = 20 * BulletDir # NOTE(hugo) : the fighter should advance in the direction it shoots towards
 	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput
-	move(DeltaFreezePos + DeltaHitPos)
+	move(DeltaFreezePos)
 
 	#(K)…and project
 	var HitDirection
 	if (LastHitSide == "left"):
-		HitDirection = Vector2(0, 1)
+		HitDirection = Vector2(0, 1) + 0.5 * BulletDir
 	else: # LastHitSide == "right"
-		HitDirection = Vector2(0, -1)
+		HitDirection = Vector2(0, -1) + 0.5 * BulletDir
 	Acceleration += ProjectionAccelerationNorm * HitDirection
 
 	# NOTE(hugo): re-init of freeze parameters
