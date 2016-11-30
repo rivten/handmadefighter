@@ -18,6 +18,8 @@ export(int, 100, 500) var FighterMargin = 200
 const FIGHTER_HORIZONTAL_INIT_POS = 400
 const HITBOX_HORIZONTAL_INIT_POS = 170
 
+export(bool) var EnableDebugTools = true
+
 #################################
 # NOTE(hugo) : This is debug code
 func instanciate_left_hitbox():
@@ -47,6 +49,7 @@ func _draw():
 
 func _ready():
 	set_fixed_process(false)
+	set_process(EnableDebugTools)
 	var WindowSize = get_viewport().get_rect().size
 	LeftHitboxInitialPos = Vector2(FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
 	RightHitboxInitialPos = Vector2(WindowSize.x - FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
@@ -68,6 +71,14 @@ func _ready():
 	Fighter2.BulletDir = Vector2(-1.0, 0.0)
 
 	DamageCounter = find_node("DamageCounter")
+
+# NOTE(hugo) : For now, this function is only used if EnableDebugTools = true.
+# If you want to use this function for non-debug purposes, you might want to change
+# set_process() in _ready.
+func _process(dt):
+	if(Input.is_key_pressed(KEY_SPACE)):
+		DamageCounter.set_text(str(0))
+
 
 func respawn_hitbox():
 	var LeftHitboxExists = LeftHitboxWeakRef.get_ref()
