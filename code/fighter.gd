@@ -12,7 +12,7 @@ export var Drag = 10
 export var HitlagTeleportDelta = 100
 export var ProjectionAccelerationNorm = 100000
 export(float, 0.0, 2.0, 0.01) var CooldownDuration = 0.2
-export(float, 0.0, 500.0, 10.0) var HomelineAttractionFactor = 100.0
+export(float, 0.0, 500.0, 10.0) var HomelineAttractionSpeed = 1.0
 var InitPos = Vector2(0, 0)
 var Velocity = Vector2(0, 0)
 var Acceleration = Vector2(0.0, 0.0)
@@ -86,9 +86,15 @@ func _fixed_process(dt):
 			CooldownTimerNode.set_wait_time(CooldownDuration)
 			CooldownTimerNode.start()
 
-		var HomelineAttraction = HomelineAttractionFactor * Vector2(InitPos.x - get_pos().x, 0.0).normalized()
-		Velocity += dt * (Acceleration - Drag * Velocity + HomelineAttraction)
-		var DeltaPos = dt * Velocity + 0.5 * dt * dt * Acceleration
+		var HomelineAttractionVelocity = Vector2(0, 0)
+		var DirectionOfHomeline = Vector2(InitPos.x - get_pos().x, 0.0).normalized()
+		if(DirectionOfHomeline.dot(BulletDir) < 0):
+			HomelineAttractionVelocity = HomelineAttractionSpeed * DirectionOfHomeline
+		else:
+			# NOTE(hugo) : If we are behind the homeline, just set the x coordinates to the homeline
+			set_pos(Vector2(InitPos.x, get_pos().y))
+		Velocity += dt * (Acceleration - Drag * Velocity) + HomelineAttractionVelocity
+		var DeltaPos = dt * (Velocity + 0.5 * dt * Acceleration);
 
 		Acceleration = Vector2(0.0, 0.0)
 		#(K) Acceleration is reset at the end (and not the beginning) so that another 
