@@ -37,6 +37,14 @@ func instanciate_right_hitbox():
 	RightHitbox.set_pos(RightHitboxInitialPos)
 #################################
 
+func _draw():
+	# NOTE(hugo) : This is DEBUG code to see the homeline of each fighter
+	# {
+	var WindowSize = get_viewport().get_rect().size
+	draw_line(Vector2(FighterMargin, 0), Vector2(FighterMargin, WindowSize.y), Color(255, 0, 0), 2)
+	draw_line(Vector2(WindowSize.x - FighterMargin, 0), Vector2(WindowSize.x - FighterMargin, WindowSize.y), Color(255, 0, 0), 2)
+	# }
+
 func _ready():
 	set_fixed_process(false)
 	var WindowSize = get_viewport().get_rect().size

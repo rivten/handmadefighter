@@ -151,15 +151,15 @@ func start_hitlag(EnteredHitbox, HitSide):
 
 func teleport_and_project():
 	#(K)Teleport…
-	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput;
+	var DeltaFreezePos = HitlagTeleportDelta * FreezeInput
 	move(DeltaFreezePos)
 
 	#(K)…and project
 	var HitDirection
 	if (LastHitSide == "left"):
-		HitDirection = Vector2(0, 1)
+		HitDirection = Vector2(0, 1) + 0.5 * BulletDir
 	else: # LastHitSide == "right"
-		HitDirection = Vector2(0, -1)
+		HitDirection = Vector2(0, -1) + 0.5 * BulletDir
 	Acceleration += ProjectionAccelerationNorm * HitDirection
 
 	# NOTE(hugo): re-init of freeze parameters
