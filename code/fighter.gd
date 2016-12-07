@@ -6,7 +6,8 @@ const INPUT_UP = 0
 const INPUT_DOWN = 1
 const INPUT_SHOOT = 2
 const INPUT_SPECIAL = 3
-var InputMap = ["", "", "", ""]
+const INPUT_SHOOT2 = 4
+var InputMap = ["", "", "", "", ""]
 
 export var AccelerationNorm = 6000
 export var Drag = 10
@@ -40,14 +41,15 @@ export(int, "BULLET_TYPE_FAST", "BULLET_TYPE_STRONG") var BulletType = 0
 
 signal hit_by_hitbox
 
-func set_input_map(UpInput, DownInput, ShootInput, SpecialInput):
+func set_input_map(UpInput, DownInput, ShootInput, Shoot2Input, SpecialInput):
 	InputMap[INPUT_UP] = UpInput
 	InputMap[INPUT_DOWN] = DownInput
 	InputMap[INPUT_SHOOT] = ShootInput
 	InputMap[INPUT_SPECIAL] = SpecialInput
+	InputMap[INPUT_SHOOT2] = Shoot2Input
 
 func set_default_input_map():
-	set_input_map("up0", "down0", "right0", "control0")
+	set_input_map("up0", "down0", "right0", "use0", "control0")
 
 func _ready():
 	set_fixed_process(true)
@@ -83,10 +85,9 @@ func _fixed_process(dt):
 		if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
 			Acceleration += AccelerationNorm * Vector2(0, 1)
 		if(Input.is_action_pressed(InputMap[INPUT_SHOOT]) && CanShoot):
-			shoot(BulletType)
-			CanShoot = false
-			CooldownTimerNode.set_wait_time(CooldownDuration)
-			CooldownTimerNode.start()
+			shoot(BULLET_TYPE_FAST)
+		if(Input.is_action_pressed(InputMap[INPUT_SHOOT2]) && CanShoot):
+			shoot(BULLET_TYPE_STRONG)
 
 		var HomelineAttractionVelocity = Vector2(0, 0)
 		var DirectionOfHomeline = Vector2(InitPos.x - get_pos().x, 0.0).normalized()
@@ -126,6 +127,9 @@ func _fixed_process(dt):
 				FreezeInputRecorded = true
 	
 func shoot(BulletType):
+	CanShoot = false
+	CooldownTimerNode.set_wait_time(CooldownDuration)
+	CooldownTimerNode.start()
 	var GameNode = get_tree().get_root().get_node("Game")
 	var BulletNode = BulletScene.instance()
 	BulletNode.set_pos(get_pos())
