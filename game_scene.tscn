@@ -16,11 +16,13 @@ FighterMargin = 200
 [node name="Fighter" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 446.203, 356.418 )
+BulletType = 0
 
 [node name="Fighter2" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 708.755, 357.778 )
 CooldownDuration = 0.5
+BulletType = 1
 
 [node name="Wall0" type="StaticBody2D" parent="."]
 

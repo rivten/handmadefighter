@@ -18,6 +18,8 @@ export(int, 100, 500) var FighterMargin = 200
 const FIGHTER_HORIZONTAL_INIT_POS = 400
 const HITBOX_HORIZONTAL_INIT_POS = 170
 
+export(bool) var EnableDebugTools = true
+
 #################################
 # NOTE(hugo) : This is debug code
 func instanciate_left_hitbox():
@@ -37,8 +39,17 @@ func instanciate_right_hitbox():
 	RightHitbox.set_pos(RightHitboxInitialPos)
 #################################
 
+func _draw():
+	# NOTE(hugo) : This is DEBUG code to see the homeline of each fighter
+	# {
+	var WindowSize = get_viewport().get_rect().size
+	draw_line(Vector2(FighterMargin, 0), Vector2(FighterMargin, WindowSize.y), Color(255, 0, 0), 2)
+	draw_line(Vector2(WindowSize.x - FighterMargin, 0), Vector2(WindowSize.x - FighterMargin, WindowSize.y), Color(255, 0, 0), 2)
+	# }
+
 func _ready():
 	set_fixed_process(false)
+	set_process(EnableDebugTools)
 	var WindowSize = get_viewport().get_rect().size
 	LeftHitboxInitialPos = Vector2(FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
 	RightHitboxInitialPos = Vector2(WindowSize.x - FighterMargin, HITBOX_HORIZONTAL_INIT_POS)
@@ -51,15 +62,25 @@ func _ready():
 
 	# NOTE(hugo) : Settings of the first fighter
 	var Fighter = find_node("Fighter")
-	Fighter.set_pos(Vector2(FighterMargin, FIGHTER_HORIZONTAL_INIT_POS))
+	Fighter.InitPos = Vector2(FighterMargin, FIGHTER_HORIZONTAL_INIT_POS)
+	Fighter.set_pos(Fighter.InitPos)
 
 	# NOTE(hugo) : Settings of the second fighter
 	var Fighter2 = find_node("Fighter2")
-	Fighter2.set_pos(Vector2(WindowSize.x - FighterMargin, FIGHTER_HORIZONTAL_INIT_POS))
+	Fighter2.InitPos = Vector2(WindowSize.x - FighterMargin, FIGHTER_HORIZONTAL_INIT_POS)
+	Fighter2.set_pos(Fighter2.InitPos)
 	Fighter2.set_input_map("up1", "down1", "left1", "control1")
 	Fighter2.BulletDir = Vector2(-1.0, 0.0)
 
 	DamageCounter = find_node("DamageCounter")
+
+# NOTE(hugo) : For now, this function is only used if EnableDebugTools = true.
+# If you want to use this function for non-debug purposes, you might want to change
+# set_process() in _ready.
+func _process(dt):
+	if(Input.is_key_pressed(KEY_SPACE)):
+		DamageCounter.set_text(str(0))
+
 
 func respawn_hitbox():
 	var LeftHitboxExists = LeftHitboxWeakRef.get_ref()
