@@ -69,7 +69,7 @@ func _ready():
 	var Fighter2 = find_node("Fighter2")
 	Fighter2.InitPos = Vector2(WindowSize.x - FighterMargin, FIGHTER_HORIZONTAL_INIT_POS)
 	Fighter2.set_pos(Fighter2.InitPos)
-	Fighter2.set_input_map("up1", "down1", "left1")
+	Fighter2.set_input_map("up1", "down1", "left1", "control1")
 	Fighter2.BulletDir = Vector2(-1.0, 0.0)
 
 	DamageCounter = find_node("DamageCounter")
