@@ -12,7 +12,8 @@ var InputMap = ["", "", "", "", ""]
 export var AccelerationNorm = 6000
 export var Drag = 10
 export var HitlagTeleportDelta = 100
-export var ProjectionAccelerationNorm = 100000
+export var PitchAxisProjectionBaseIntensity = 100000
+export var RollAxisProjectionBaseIntensity = 10000
 export(float, 0.0, 2.0, 0.01) var CooldownDuration = 0.2
 export(float, 0.0, 500.0, 10.0) var HomelineAttractionSpeed = 1.0
 var InitPos = Vector2(0, 0)
@@ -26,6 +27,7 @@ var CooldownTimerNode
 var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
 var IsControllable = true
+var Damage = 0
 
 # NOTE(hugo) : Shoot data
 # {
@@ -38,8 +40,7 @@ var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
 export(int, "BULLET_TYPE_FAST", "BULLET_TYPE_STRONG") var BulletType = 0
 # }
-
-signal hit_by_hitbox
+signal damage_changed
 
 func set_input_map(UpInput, DownInput, ShootInput, Shoot2Input, SpecialInput):
 	InputMap[INPUT_UP] = UpInput
@@ -75,7 +76,8 @@ func _ready():
 	set_default_input_map()
 
 	var GameNode = get_node("/root/Game")
-	self.connect("hit_by_hitbox", GameNode, "increase_damage_counter")
+	GameNode.connect("reset_damage", self, "set_damage")
+	self.connect("damage_changed", GameNode, "update_damage_counter")
 
 func _fixed_process(dt):
 
@@ -163,18 +165,22 @@ func start_hitlag_from_left(EnteredHitbox):
 func start_hitlag_from_right(EnteredHitbox):
 	start_hitlag(EnteredHitbox, "right")
 
+# TODO(hugo):  A quick debug make me notice that we go through this function way too many times :
+#   (A) the fighter who shoot actually collides with its bullet, so we go in there (but do nothing fortunately)
+#   (B) if the bullet hits the middle of the other fighter, we call this for each side. I don't even understand why we are not computing the damage twice in this case
 func start_hitlag(EnteredHitbox, HitSide):
-	var Damage = 0
+	var HitDamage = 0
 	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
 		#NOTE(hugo): I don't really like that but I don't see any easy way around this. We need to get the power of a bullet, so we need to know if we hit a bullet first, then react accordingly
-		if(EnteredHitbox.get_name() == "Bullet"):
-			Damage = EnteredHitbox.Power
+		if("Bullet".is_subsequence_of(EnteredHitbox.get_name())):
+			HitDamage = EnteredHitbox.Power
+			Damage += HitDamage
+			emit_signal("damage_changed", self.get_name(), Damage)
 		EnteredHitbox.queue_free()
 		if(!Frozen):
 			Frozen = true
 			FreezeTimerNode.start()
 			LastHitSide = HitSide
-			emit_signal("hit_by_hitbox", self.get_name(), Damage)
 
 func teleport_and_project():
 	#(K)Teleport…
@@ -182,14 +188,21 @@ func teleport_and_project():
 	move(DeltaFreezePos)
 
 	#(K)…and project
-	var HitDirection
+	#(K) I am using the vocabulary of pitch (left/right), roll(front/rear) and yaw(sky/ground) axis 
+
+	var PitchAxisAcceleration
+	var RollAxisAcceleration = RollAxisProjectionBaseIntensity * Damage * BulletDir
 	if (LastHitSide == "left"):
-		HitDirection = Vector2(0, 1) + 0.5 * BulletDir
+		PitchAxisAcceleration = PitchAxisProjectionBaseIntensity * Vector2(0, 1)
 	else: # LastHitSide == "right"
-		HitDirection = Vector2(0, -1) + 0.5 * BulletDir
-	Acceleration += ProjectionAccelerationNorm * HitDirection
+		PitchAxisAcceleration = PitchAxisProjectionBaseIntensity * Vector2(0, -1)
+		
+	Acceleration += PitchAxisAcceleration + RollAxisAcceleration
 
 	# NOTE(hugo): re-init of freeze parameters
 	FreezeInput = Vector2(0, 0)
 	Frozen = false
 	FreezeInputRecorded = false
+
+func set_damage(DamageToSet): #(K) seems dumb but actually it is used by a signal
+	Damage = DamageToSet
