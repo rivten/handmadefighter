@@ -18,6 +18,8 @@ export(int, 100, 500) var FighterMargin = 200
 const FIGHTER_HORIZONTAL_INIT_POS = 400
 const HITBOX_HORIZONTAL_INIT_POS = 170
 
+signal reset_damage
+
 export(bool) var EnableDebugTools = true
 
 #################################
@@ -80,7 +82,7 @@ func _ready():
 func _process(dt):
 	if(Input.is_key_pressed(KEY_SPACE)):
 		DamageCounter.set_text(str(0))
-
+		emit_signal("reset_damage", 0)
 
 func respawn_hitbox():
 	var LeftHitboxExists = LeftHitboxWeakRef.get_ref()
@@ -91,8 +93,6 @@ func respawn_hitbox():
 	if (!RightHitboxExists):
 		instanciate_right_hitbox()
 
-
-func increase_damage_counter(FighterName, Damage):
+func update_damage_counter(FighterName, Damage):
 	if(FighterName == 'Fighter'):
-		var NewDamage = (DamageCounter.get_text().to_int()) + Damage
-		DamageCounter.set_text(str(NewDamage))
+		DamageCounter.set_text(str(Damage))
