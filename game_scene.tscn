@@ -18,15 +18,16 @@ EnableDebugTools = true
 
 transform/pos = Vector2( 446.203, 356.418 )
 PitchAxisProjectionBaseIntensity = 100000
-RollAxisProjectionBaseIntensity = 10000
-HomelineAttractionSpeed = 1.0
+RollAxisProjectionBaseIntensity = 5000
+HomelineAttractionSpeed = 10.0
+HitDisplacementFactor = 1.0
 BulletType = 0
 
 [node name="Fighter2" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 708.755, 357.778 )
 PitchAxisProjectionBaseIntensity = 100000
-RollAxisProjectionBaseIntensity = 10000
+RollAxisProjectionBaseIntensity = 5000
 CooldownDuration = 0.5
 HomelineAttractionSpeed = 1.0
 BulletType = 0
