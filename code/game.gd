@@ -57,11 +57,11 @@ func _draw():
 	var StepCount = 100
 	var Epsilon = WindowSize.y / StepCount
 	for StepIndex in range(StepCount):
-		var YBegin = StepIndex * Epsilon
+		var YBeginning = StepIndex * Epsilon
 		var YEnd = (StepIndex + 1) * Epsilon
-		var XBegin = deathline_equation(YBegin, WindowSize)
+		var XBeginning = deathline_equation(YBeginning, WindowSize)
 		var XEnd = deathline_equation(YEnd, WindowSize)
-		draw_line(Vector2(XBegin, YBegin), Vector2(XEnd, YEnd), Color(236, 88, 0), 1)
+		draw_line(Vector2(XBeginning, YBeginning), Vector2(XEnd, YEnd), Color(236, 88, 0), 1)
 
 func _ready():
 	set_fixed_process(false)
