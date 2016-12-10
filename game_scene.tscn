@@ -22,19 +22,13 @@ EnableDebugTools = true
 [node name="Fighter" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 446.203, 356.418 )
-PitchAxisProjectionBaseIntensity = 100000
-RollAxisProjectionBaseIntensity = 5000
-HomelineAttractionSpeed = 10.0
-BulletType = 0
+HomelineAttractionSpeed = 1.0
 
 [node name="Fighter2" parent="." instance=ExtResource( 2 )]
 
 transform/pos = Vector2( 708.755, 357.778 )
-PitchAxisProjectionBaseIntensity = 100000
-RollAxisProjectionBaseIntensity = 5000
 CooldownDuration = 0.5
 HomelineAttractionSpeed = 1.0
-BulletType = 0
 
 [node name="Wall0" type="StaticBody2D" parent="."]
 
