@@ -92,6 +92,9 @@ func _ready():
 	Fighter2.set_input_map("up1", "down1", "left1", "use1", "control1")
 	Fighter2.BulletDir = Vector2(-1.0, 0.0)
 
+	Fighter.add_to_group("Fighters")
+	Fighter2.add_to_group("Fighters")
+
 	DamageCounter = find_node("DamageCounter")
 
 	# NOTE(hugo) : Setting the left zone of the left fighter
@@ -109,7 +112,7 @@ func _ready():
 	LeftLifeAreaShape.set_points(LeftLifeAreaPoints)
 
 	LeftLifeAreaNode.add_to_group(Fighter.CollisionIgnoreGroupName)
-	LeftLifeAreaNode.connect("body_exit", self, "reset_fighter_counter")
+	LeftLifeAreaNode.connect("body_exit", self, "reset_fighter")
 
 
 # NOTE(hugo) : For now, this function is only used if EnableDebugTools = true.
@@ -133,5 +136,7 @@ func update_damage_counter(FighterName, Damage):
 	if(FighterName == 'Fighter'):
 		DamageCounter.set_text(str(Damage))
 
-func reset_fighter_counter(Fighter):
-	update_damage_counter(Fighter.get_name(), 0)
+func reset_fighter(Fighter):
+	if(Fighter.is_in_group("Fighters")):
+		Fighter.set_pos(Fighter.InitPos)
+		update_damage_counter(Fighter.get_name(), 0)
