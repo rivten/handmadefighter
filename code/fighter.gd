@@ -35,7 +35,7 @@ const BULLET_TYPE_FAST = 0
 const BULLET_TYPE_STRONG = 1
 var CanShoot = true
 var BulletScene = preload("res://Bullet.tscn")
-var BulletsGroupName
+var CollisionIgnoreGroupName
 var BulletDir = Vector2(1.0, 0.0)
 export(float, 0.0, 150.0) var BulletSpeed = 90.0
 export(int, "BULLET_TYPE_FAST", "BULLET_TYPE_STRONG") var BulletType = 0
@@ -66,7 +66,7 @@ func _ready():
 	CooldownTimerNode = find_node("CooldownTimer")
 	CooldownTimerNode.connect("timeout", self, "enable_shooting")
 
-	BulletsGroupName = "BulletsOf" + self.get_name()
+	CollisionIgnoreGroupName = "CollisionIgnoreOf" + self.get_name()
 
 	var LeftAreaNode = find_node("LeftArea")
 	var RightAreaNode = find_node("RightArea")
@@ -115,7 +115,7 @@ func _fixed_process(dt):
 			# 'move' call
 			var ActualMovement = get_pos() - PreviousPos
 			var DeltaPosVerticalComponent = Vector2(0, ActualMovement.y)
-			var BulletGroup = get_tree().get_nodes_in_group(BulletsGroupName)
+			var BulletGroup = get_tree().get_nodes_in_group(CollisionIgnoreGroupName)
 			for Bullet in BulletGroup:
 				Bullet.set_pos(Bullet.get_pos() + DeltaPosVerticalComponent)
 
@@ -154,7 +154,7 @@ func shoot(BulletType):
 	BulletNode.Velocity = BulletVelocity
 	BulletNode.Power = BulletPower
 	GameNode.add_child(BulletNode)
-	BulletNode.add_to_group(BulletsGroupName)
+	BulletNode.add_to_group(CollisionIgnoreGroupName)
 
 func enable_shooting():
 	CanShoot = true
@@ -170,7 +170,7 @@ func start_hitlag_from_right(EnteredHitbox):
 #   (B) if the bullet hits the middle of the other fighter, we call this for each side. I don't even understand why we are not computing the damage twice in this case
 func start_hitlag(EnteredHitbox, HitSide):
 	var HitDamage = 0
-	if(!EnteredHitbox.is_in_group(BulletsGroupName)):
+	if(!EnteredHitbox.is_in_group(CollisionIgnoreGroupName)):
 		#NOTE(hugo): I don't really like that but I don't see any easy way around this. We need to get the power of a bullet, so we need to know if we hit a bullet first, then react accordingly
 		if("Bullet".is_subsequence_of(EnteredHitbox.get_name())):
 			HitDamage = EnteredHitbox.Power
