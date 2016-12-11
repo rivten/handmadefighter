@@ -9,7 +9,7 @@ const INPUT_SPECIAL = 3
 const INPUT_SHOOT2 = 4
 var InputMap = ["", "", "", "", ""]
 
-export var AccelerationNorm = 6000
+export var InputAccelerationNorm = 6000
 export var Drag = 10
 export var HitlagTeleportDelta = 100
 export var PitchAxisProjectionBaseIntensity = 100000
@@ -24,7 +24,6 @@ var FreezeInputRecorded = false
 var FreezeInput = Vector2(0.0, 0.0)
 var FreezeTimerNode
 var CooldownTimerNode
-var ProjectionAcceleration = Vector2(0.0, 0.0)
 var LastHitSide
 var IsControllable = true
 var Damage = 0
@@ -83,9 +82,9 @@ func _fixed_process(dt):
 
 	if(IsControllable && (!Frozen)):
 		if(Input.is_action_pressed(InputMap[INPUT_UP])):
-			Acceleration += AccelerationNorm * Vector2(0, -1)
+			Acceleration += InputAccelerationNorm * Vector2(0, -1)
 		if(Input.is_action_pressed(InputMap[INPUT_DOWN])):
-			Acceleration += AccelerationNorm * Vector2(0, 1)
+			Acceleration += InputAccelerationNorm * Vector2(0, 1)
 		if(Input.is_action_pressed(InputMap[INPUT_SHOOT]) && CanShoot):
 			shoot(BULLET_TYPE_FAST)
 		if(Input.is_action_pressed(InputMap[INPUT_SHOOT2]) && CanShoot):
@@ -197,8 +196,6 @@ func teleport_and_project():
 	else: # LastHitSide == "right"
 		PitchAxisAcceleration = PitchAxisProjectionBaseIntensity * Vector2(0, -1)
 		
-	Acceleration += PitchAxisAcceleration + RollAxisAcceleration
-
 	# NOTE(hugo): re-init of freeze parameters
 	FreezeInput = Vector2(0, 0)
 	Frozen = false

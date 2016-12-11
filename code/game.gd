@@ -139,4 +139,5 @@ func update_damage_counter(FighterName, Damage):
 func reset_fighter(Fighter):
 	if(Fighter.is_in_group("Fighters")):
 		Fighter.set_pos(Fighter.InitPos)
+		Fighter.Damage = 0
 		update_damage_counter(Fighter.get_name(), 0)
